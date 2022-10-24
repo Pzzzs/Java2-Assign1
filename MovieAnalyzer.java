@@ -4,57 +4,39 @@ import java.util.*;
 
 public class MovieAnalyzer {
 
-    int     Poster_Link=0,
-            Series_Title=1,
-            Released_Year=2,
-            Certificate=3,
-            Runtime=4,
-            Genre=5,
-            IMDB_Rating=6,
-            Overview=7,
-            Meta_score=8,
-            Director=9,
-            Star1=10,
-            Star2=11,
-            Star3=12,
-            Star4=13,
-            No_of_Votes=14,
-            Gross=15;
+  String dataset_path;
 
-    String dataset_path;
+  public MovieAnalyzer(String dataset_path) {
+    this.dataset_path = dataset_path;
+  }
 
-    public MovieAnalyzer(String dataset_path) {
-        this.dataset_path = dataset_path;
-    }
+  public Map<Integer, Integer> getMovieCountByYear(){
+    String line;
+    String[] splitArray;
+    Map<Integer, Integer> map = new HashMap<>();
 
-    public Map<Integer, Integer> getMovieCountByYear(){
-        String line;
-        String[] splitArray;
-        Map<Integer, Integer> map = new HashMap<>();
-
-        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(dataset_path), StandardCharsets.UTF_8))) {
-            bufferedReader.readLine();
-            while ((line = bufferedReader.readLine()) != null) {
-                splitArray = line.trim().split(",(?=([^\\\"]*\\\"[^\\\"]*\\\")*[^\\\"]*$)",-1);
-                int year = Integer.parseInt(splitArray[2]);
-                if (map.containsKey(year)){
-                    map.put(year,map.get(year)+1);
-                }
-                else map.put(year,1);
-
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+    try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(dataset_path), StandardCharsets.UTF_8))) {
+      bufferedReader.readLine();
+      while ((line = bufferedReader.readLine()) != null) {
+        splitArray = line.trim().split(",(?=([^\\\"]*\\\"[^\\\"]*\\\")*[^\\\"]*$)",-1);
+        int year = Integer.parseInt(splitArray[2]);
+        if (map.containsKey(year)){
+          map.put(year,map.get(year)+1);
         }
-        List<Map.Entry<Integer, Integer>> list = new LinkedList(map.entrySet());
-        Collections.sort(list, (o1, o2) -> o2.getKey().compareTo(o1.getKey()));
-        Map<Integer, Integer> result = new LinkedHashMap<>();
-        for (Map.Entry<Integer, Integer> entry : list) {
-            result.put(entry.getKey(), entry.getValue());
-        }
-        return result;
+        else map.put(year,1);
 
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
     }
+    List<Map.Entry<Integer, Integer>> list = new LinkedList(map.entrySet());
+    Collections.sort(list, (o1, o2) -> o2.getKey().compareTo(o1.getKey()));
+    Map<Integer, Integer> result = new LinkedHashMap<>();
+    for (Map.Entry<Integer, Integer> entry : list) {
+      result.put(entry.getKey(), entry.getValue());
+    }
+    return result;
+  }
 
     public Map<String, Integer> getMovieCountByGenre(){
         String line;
